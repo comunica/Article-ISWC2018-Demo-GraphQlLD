@@ -3,7 +3,7 @@
 The Linked Open Data cloud has the potential of significantly
 enhancing and transforming end-user applications.
 For example, the use of URIs to identify things allow data joining between separate data sources.
-The most popular (Web) application frameworks, such as React and Angular
+Most popular (Web) application frameworks, such as React and Angular
 have limited support for querying the Web of Linked Data,
 which leads to a high-entry barrier for front-end application developers.
 Instead, these developers typically use the highly popular GraphQL query language
