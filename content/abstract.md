@@ -8,7 +8,7 @@ have limited support for querying the Web of Linked Data,
 which leads to a high-entry barrier for Web application developers.
 Instead, these developers increasingly use the highly popular GraphQL query language
 for retrieving data from GraphQL APIs,
-because GraphQL is tighly integrated into these frameworks.
+because GraphQL is tightly integrated into these frameworks.
 <!-- Need         -->
 In order to lower the barrier for developers towards Linked Data consumption,
 <!-- Task         -->
