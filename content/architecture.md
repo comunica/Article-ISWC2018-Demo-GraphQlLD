@@ -49,5 +49,8 @@ where more information on the conversion process can be found.
 The _SPARQL results to tree_ module can convert SPARQL query results to a tree-based structure.
 This is done by splitting combining variables prefix-based,
 and aggregating results in a tree structure.
+In order to determine whether a certain variable binding should be seen as an array or a single value,
+we reguire a mapping to be passed inside the context that defines which variables are singular.
+If variables are not defined in this mapping, they are considered plural by default.
 
 This module is also available under the open MIT license on [GitHub](https://github.com/rubensworks/sparqljson-to-tree.js){:.mandatory}.
