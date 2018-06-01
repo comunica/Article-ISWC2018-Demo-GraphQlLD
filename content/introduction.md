@@ -9,23 +9,14 @@ are not experienced in the handling of (RDF) triples.
 Instead, they are better equiped to handle nested objects.
 Furthermore, more libraries and frameworks exist for the latter.
 
-In order to bridge this gap between RDF and developers, several works have been proposed
+In order to bridge this gap between RDF and developers, [several works have been proposed](cite:cites sparqltojsonld,transformingjsonsparql)
 to simplify the definition of queries and the shaping of results.
-[_sparql-to-jsonld_](cite:cites sparqltojsonld) is a tool that converts the output
-of SPARQL queries to [JSON-LD](cite:cites jsonld) documents,
-where JSON-LD is an RDF serialization that uses the developer-friendly JSON format.
-This tool still requires the SPARQL syntax to be used for defining queries.
-Recently, an approach was introduced that also builds upon the concepts of JSON-LD
-to define SPARQL queries in JSON-LD, after which the [SPARQL query results are shaped to the desired JSON shape](cite:cites transformingjsonsparql).
-While this last approach tackles both the problem of query definition and result shaping,
-it still requires developers to have basic knowledge about triple patterns
-and the domain-specific language that is introduced by the approach.
+These approaches either only semantify the query results,
+or require a custom domain-specific language for defining queries.
 
 GraphQL has however proven to be a popular query language among developers.
 In 2015, the [GraphQL framework](cite:cites graphql) was introduced by Facebook
 as an alternative way of querying data through interfaces.
-It is often being positioned as an alternative to [RESTful interfaces](cite:cites rest),
-as it is able to replace multiple REST calls with a single tree-like query.
 Since then, GraphQL has been gaining increasing attention among developers,
 partly due to its simplicity in usage, and its large collection of supporting tools.
 One major disadvantage of GraphQL compared to SPARQL is the fact that it has no notion of semantics,

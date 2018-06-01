@@ -11,5 +11,4 @@ OWL's InverseFunctionalProperty or JSON-LD framework are potential options that 
 
 In summary, this work allows developers who are able to work with GraphQL
 to query the Linked Open Data cloud.
-Furthermore, GraphQL can also be used an an alternative to SPARQL.
-Even though it is less expressive than SPARQL, it can lead to simpler queries for certain cases.
+Furthermore, GraphQL-LD can be used by Linked Data experts an an alternative to SPARQL.
