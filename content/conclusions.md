@@ -1,14 +1,13 @@
 ## Conclusions
 {:#conclusions}
 
-Through this work, we propose GraphQL-LD as a technique for combining the worlds of GraphQL and the Semantic Web.
+In this work, we propose GraphQL-LD as a technique for combining the worlds of GraphQL and the Semantic Web.
 We provide an implementation of this approach, and demonstrate this with a set of example queries.
 
-In future work, we intend to formalize our algorithm for converting GraphQL queries to SPARQL algebra.
-Furthermore, we intend to improve the way in which our _SPARQL results to tree_ module determines which variables
+In future work, we intend to formalize our GraphQL-LD conversion algorithm.
+Furthermore, we intend to improve the way in which we determine which variables
 should be considered singular or plural.
-OWL's InverseFunctionalProperty or JSON-LD framework are potential options that we consider for this.
+OWL's `InverseFunctionalProperty` or JSON-LD framing are potential options that we consider for this.
 
-In summary, this work allows developers who are able to work with GraphQL
-to query the Linked Open Data cloud.
-Furthermore, GraphQL-LD can be used by Linked Data experts an an alternative to SPARQL.
+In summary, this work allows GraphQL developers to query the Linked Open Data cloud.
+But also Linked Data experts can use it an an alternative to SPARQL.

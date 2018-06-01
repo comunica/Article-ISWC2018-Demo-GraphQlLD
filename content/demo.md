@@ -1,7 +1,7 @@
 ## Demonstration Overview
 {:#demo}
 
-In our demonstration, we will offer the live evaluation of a set of GraphQL-LD queries.
+In our demonstration during the conference, we will offer the live evaluation of a set of GraphQL-LD queries using the Comunica framework.
 All of these queries, together with a guide to run the demonstration can be found as
 a [gist](https://gist.github.com/rubensworks/9d6eccce996317677d71944ed1087ea6){:.mandatory}.
 
@@ -25,6 +25,6 @@ JSON-LD context for the query in [](#query).
 <figure id="results" class="listing">
 ````/code/results.txt````
 <figcaption markdown="block">
-Results of the GraphQL query in [](#query), together with the JSON-LD context from [](#context).
+Results of the GraphQL-LD query in [](#query) and [](#context).
 </figcaption>
 </figure>

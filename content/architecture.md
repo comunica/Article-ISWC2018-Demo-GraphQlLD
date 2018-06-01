@@ -1,14 +1,15 @@
-## Architecture
+## Approach
 {:#architecture}
 
-Our approach has been implemented as two standalone modules:
+We define a GraphQL-LD query as a GraphQL query paired with a JSON-LD context.
+In this demonstration, we handle GraphQL-LD queries using two standalone modules:
 
-* **GraphQL to SPARQL algebra**: Parses a GraphQL query to SPARQL algebra.
+* **GraphQL to SPARQL algebra**: Parses a GraphQL query and JSON-LD context to SPARQL algebra.
 * **SPARQL results to tree**: Converts SPARQL query results to a tree structure.
 
 These modules will be explained in more detail hereafter.
 We plugged these modules into the [Comunica](cite:cites comunica) framework
-as modules for parsing queries and serializing results.
+in order to evaluate SPARQL queries.
 
 [](#fig-architecture) shows an overview of our approach,
 where GraphQL queries and JSON-LD contexts are passed to our _GraphQL to SPARQL algebra_ module,
@@ -50,7 +51,7 @@ The _SPARQL results to tree_ module can convert SPARQL query results to a tree-b
 This is done by splitting combining variables prefix-based,
 and aggregating results in a tree structure.
 In order to determine whether a certain variable binding should be seen as an array or a single value,
-we reguire a mapping to be passed inside the context that defines which variables are singular.
+we require a mapping to be passed inside the context that defines which variables are singular.
 If variables are not defined in this mapping, they are considered plural by default.
 
 This module is also available under the open MIT license on [GitHub](https://github.com/rubensworks/sparqljson-to-tree.js){:.mandatory}.
