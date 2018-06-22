@@ -1,0 +1,4 @@
+[ {
+    "artist": { "label": "Barry Gibb" },
+    "label": "All in Your Name"
+  }, ... ]
