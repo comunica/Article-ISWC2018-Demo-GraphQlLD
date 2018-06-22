@@ -1,0 +1,4 @@
+{ label
+  writer(label_en: "Michael Jackson")
+  artist { label }
+}

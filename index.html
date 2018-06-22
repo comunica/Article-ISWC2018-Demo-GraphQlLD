@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>GraphQL-LD: Linked Data Querying with GraphQL</title>
+  <link rel="stylesheet" media="screen" href="styles/screen.css" />
+  <link rel="stylesheet" media="print"  href="styles/print.css" />
+</head>
+<body prefix="cc: https://creativecommons.org/ns# rdfs: http://www.w3.org/2000/01/rdf-schema#">
+  <header>
+  <h1 id="graphql-ld-linked-data-querying-with-graphql">GraphQL-LD: Linked Data Querying with GraphQL</h1>
+
+  <ul id="authors">
+    <li><a href="http://www.rubensworks.net/" typeof="http://xmlns.com/foaf/0.1/Person" resource="http://www.rubensworks.net/#me" id="idlab">Ruben Taelman</a></li>
+    <li><a href="#" typeof="http://xmlns.com/foaf/0.1/Person" resource="https://data.verborgh.org/people/miel_vander_sande" id="idlab">Miel Vander Sande</a></li>
+    <li><a href="https://ruben.verborgh.org/" typeof="http://xmlns.com/foaf/0.1/Person" resource="https://ruben.verborgh.org/profile/#me" id="idlab">Ruben Verborgh</a></li>
+  </ul>
+
+  <ul id="affiliations">
+    <li id="idlab"><sup>1</sup>IDLab,
+          Department of Electronics and Information Systems,
+          Ghent University – imec</li>
+  </ul>
+
+  <section id="abstract">
+    <h2>Abstract</h2>
+    <!-- Context      -->
+    <p>The Linked Open Data cloud has the potential of significantly
+enhancing and transforming end-user applications.
+For example, the use of URIs to identify things allows data joining between separate data sources.
+Most popular (Web) application frameworks, such as React and Angular
+have limited support for querying the Web of Linked Data,
+which leads to a high-entry barrier for Web application developers.
+Instead, these developers increasingly use the highly popular GraphQL query language
+for retrieving data from GraphQL APIs,
+because GraphQL is tightly integrated into these frameworks.
+<!-- Need         -->
+In order to lower the barrier for developers towards Linked Data consumption,
+<!-- Task         -->
+the Linked Open Data cloud needs to be queryable with GraphQL as well.
+<!-- Object       -->
+In this article, we introduce a method for transforming GraphQL queries coupled with a JSON-LD context to SPARQL,
+and a method for converting SPARQL results to the GraphQL query-compatible response.
+We demonstrate this method by implementing it into the Comunica framework.
+<!-- Findings     -->
+<!-- Conclusion   -->
+This approach brings us one step closer towards widespread
+Linked Data consumption for application development.
+<!-- Perspectives --></p>
+
+  </section>
+
+</header>
+
+<main>
+  <section id="introduction">
+    <h2>Introduction</h2>
+
+    <p>The <a href="spec:sparqllang">SPARQL query language</a> is a W3C recommendation for querying RDF data.
+While this language has gained a lot of attention in the research domain,
+its widespread usage within commercial applications remains limited.
+One of the reasons for this is many developers
+are not experienced in the handling of (RDF) triples.
+Instead, they are better equiped to handle nested objects.
+Furthermore, more libraries and frameworks exist for the latter.</p>
+
+    <p>In order to bridge this gap between RDF and developers, <a property="schema:citation http://purl.org/spar/cito/cites" href="https://github.com/jindrichmynarz/sparql-to-jsonld">several works have been proposed</a> <span class="references">[<a href="#ref-1">1</a>, <a href="#ref-2">2</a>]</span>
+to simplify the definition of queries and the shaping of results.
+These approaches either only semantify the query results,
+or require a custom domain-specific language for defining queries.</p>
+
+    <p>GraphQL is a query language that has proven to be a popular among developers.
+In 2015, the <a property="schema:citation http://purl.org/spar/cito/cites" href="http://facebook.github.io/graphql/October2016/">GraphQL framework</a> <span class="references">[<a href="#ref-3">3</a>]</span> was introduced by Facebook
+as an alternative way of querying data through interfaces.
+Since then, GraphQL has been gaining increasing attention among developers,
+partly due to its simplicity in usage, and its large collection of supporting tools.
+One major disadvantage of GraphQL compared to SPARQL is the fact that it has no notion of semantics,
+i.e., it requires an interface-specific schema.
+This therefore makes it difficult to combine GraphQL data that originates from different sources.
+This is then further complicated by the fact that GraphQL has no notion of global identifiers,
+which <em>is</em> possible in RDF through the use of URIs.
+Furthermore, GraphQL is however not as expressive as SPARQL,
+as GraphQL queries represent trees <span class="references">[<a href="#ref-4">4</a>]</span>,
+and not full graphs as in SPARQL.</p>
+
+    <p>In this work, we introduce <em>GraphQL-LD</em>, an approach for extending GraphQL queries with a JSON-LD context <span class="references">[<a href="#ref-5">5</a>]</span>,
+so that they can be used to evaluate queries over RDF data.
+This results in a query language that is less expressive than SPARQL,
+but can still achieve many of the typical data retrieval tasks in applications.
+Our approach consists of an algorithm that translates GraphQL-LD queries to <a property="schema:citation http://purl.org/spar/cito/cites" href="https://www.w3.org/TR/2013/REC-sparql11-query-20130321/">SPARQL algebra</a> <span class="references">[<a href="#ref-6">6</a>]</span>.
+This allows such queries to be used as an alternative input to SPARQL engines,
+and thereby opens up the world of RDF data to the large amount of people that already know GraphQL.
+Furthermore, results can be translated into the GraphQL-prescribed shapes.
+The only additional requirement is their queries would now also need a JSON-LD context,
+which could be provided by external domain experts.</p>
+
+    <p>In related work, <a property="schema:citation http://purl.org/spar/cito/cites" href="http://hypergraphql.org/">HyperGraphQL</a> <span class="references">[<a href="#ref-7">7</a>]</span> was introduced as a way to expose access to RDF sources
+through GraphQL queries and emit results as JSON-LD.
+The difference with our approach is that HyperGraphQL requires a service to be set up
+that acts as a intermediary between the GraphQL client and the RDF sources.
+Instead, our approach enables agents to directly query RDF sources by translating GraphQL queries client-side.</p>
+
+    <p>In the next section, we summarize the architecture of our approach and the SPARQL algebra translation algorithm.
+After that, we explain our demonstration in <a href="#demo">Section 3</a>, after which we conclude in <a href="#conclusions">Section 4</a>.</p>
+
+  </section>
+
+  <section id="architecture">
+    <h2>Approach</h2>
+
+    <p>We define a GraphQL-LD query as a GraphQL query paired with a JSON-LD context.
+In this demonstration, we handle GraphQL-LD queries using two standalone modules:</p>
+
+    <ul>
+      <li><strong>GraphQL to SPARQL algebra</strong>: Parses a GraphQL query and JSON-LD context to SPARQL algebra.</li>
+      <li><strong>SPARQL results to tree</strong>: Converts SPARQL query results to a tree structure.</li>
+    </ul>
+
+    <p>These modules will be explained in more detail hereafter.
+We plugged these modules into the <a property="schema:citation http://purl.org/spar/cito/cites" href="https://comunica.github.io/Article-ISWC2018-Resource/">Comunica</a> <span class="references">[<a href="#ref-8">8</a>]</span> framework
+in order to evaluate SPARQL queries.</p>
+
+    <p><a href="#fig-architecture">Fig. 1</a> shows an overview of our approach,
+where GraphQL queries and JSON-LD contexts are passed to our <em>GraphQL to SPARQL algebra</em> module,
+the resulting SPARQL algebra is queried with Comunica,
+and the results are shaped with the <em>SPARQL results to tree</em> module.</p>
+
+    <figure id="fig-architecture">
+<img src="img/architecture.svg" alt="[GraphQl-LD Architecture]" />
+<figcaption>
+        <p><span class="label">Fig. 1:</span> Flow of GraphQL queries and JSON-LD contexts to SPARQL algebra, to SPARQL results, and to a tree shape.</p>
+      </figcaption>
+</figure>
+
+    <p>Just like Comunica, our modules are implemented in JavaScript,
+and are compatible with the API specification
+by the <a href="https://www.w3.org/community/rdfjs/" class="mandatory" data-link-text="https:/​/​www.w3.org/​community/​rdfjs/​">RDFJS W3C community group</a>.
+This enables interaction between different JavaScript applications that supports this API.</p>
+
+    <h3 id="graphql-to-sparql-algebra">GraphQL to SPARQL algebra</h3>
+
+    <p>The <em>GraphQL to SPARQL algebra</em> module is responsible for parsing a GraphQL query to SPARQL algebra,
+based on a JSON-LD context.
+The conversion algorithm is based on translating GraphQL’s tree-based structures to links of triple patterns in SPARQL.</p>
+
+    <p>Triple patterns are however not sufficient to express all of GraphQL’s features.
+For instance, GraphQL allows queries to contain reusable <a href="http://facebook.github.io/graphql/October2016/#sec-Validation.Fragments" class="mandantory">fragments</a>.
+These fragments are reusable query blocks, which must be applied on a certain type.
+If this type does not match, then the fragment will be ignored.
+We consider fragments to use the left-join semantics, which translates to the <code>OPTIONAL</code> keyword in SPARQL.
+Furthermore, GraphQL queries also allow pagination with the <code>first</code> and <code>offset</code>,
+which we translate to SPARQL <code>OFFSET</code> and <code>LIMIT</code>.</p>
+
+    <p>This module is available under the open MIT license on <a href="https://github.com/rubensworks/graphql-to-sparql.js" class="mandatory" data-link-text="https:/​/​github.com/​rubensworks/​graphql-​to-​sparql.js">GitHub</a>,
+where more information on the conversion process can be found.</p>
+
+    <h3 id="sparql-results-to-tree">SPARQL results to tree</h3>
+
+    <p>The <em>SPARQL results to tree</em> module can convert SPARQL query results to a tree-based structure.
+This is done by splitting combining variables prefix-based,
+and aggregating results in a tree structure.
+In order to determine whether a certain variable binding should be seen as an array or a single value,
+we require a mapping to be passed inside the context that defines which variables are singular.
+If variables are not defined in this mapping, they are considered plural by default.</p>
+
+    <p>This module is also available under the open MIT license on <a href="https://github.com/rubensworks/sparqljson-to-tree.js" class="mandatory" data-link-text="https:/​/​github.com/​rubensworks/​sparqljson-​to-​tree.js">GitHub</a>.</p>
+  </section>
+
+  <section id="demo">
+    <h2>Demonstration Overview</h2>
+
+    <p>In our demonstration during the conference, we will offer the live evaluation of a set of GraphQL-LD queries using the Comunica framework.
+All of these queries, together with a guide to run the demonstration can be found as
+a <a href="https://gist.github.com/rubensworks/9d6eccce996317677d71944ed1087ea6" class="mandatory" data-link-text="https:/​/​gist.github.com/​rubensworks/​9d6eccce996317677d71944ed1087ea6">gist</a>.</p>
+
+    <p>For example, <a href="#query">Listing 1</a> and <a href="#context">Listing 2</a> contain respectively a query and context
+that will produce the results from <a href="#results">Listing 3</a> when executing against a DBpedia endpoint.</p>
+
+    <figure id="query" class="listing">
+<pre><code>{ label
+</code><code>  writer(label_en: &quot;Michael Jackson&quot;)
+</code><code>  artist { label }
+</code><code>}</code></pre>
+<figcaption>
+        <p><span class="label">Listing 1:</span> GraphQL query to find all bands that Michael Jackson has written a song for.</p>
+      </figcaption>
+</figure>
+
+    <figure id="context" class="listing">
+<pre><code>{ &quot;label&quot;: &quot;http://www.w3.org/2000/01/rdf-schema#label&quot;,
+</code><code>  &quot;label_en&quot;: { &quot;@id&quot;: &quot;http://www.w3.org/2000/01/rdf-schema#label&quot;, &quot;@language&quot;: &quot;en&quot; },
+</code><code>  &quot;writer&quot;: &quot;http://dbpedia.org/ontology/writer&quot;,
+</code><code>  &quot;artist&quot;: &quot;http://dbpedia.org/ontology/musicalArtist&quot; }</code></pre>
+<figcaption>
+        <p><span class="label">Listing 2:</span> JSON-LD context for the query in <a href="#query">Listing 1</a>.</p>
+      </figcaption>
+</figure>
+
+    <figure id="results" class="listing">
+<pre><code>[ {
+</code><code>    &quot;artist&quot;: { &quot;label&quot;: &quot;Barry Gibb&quot; },
+</code><code>    &quot;label&quot;: &quot;All in Your Name&quot;
+</code><code>  }, ... ]</code></pre>
+<figcaption>
+        <p><span class="label">Listing 3:</span> Results of the GraphQL-LD query in <a href="#query">Listing 1</a> and <a href="#context">Listing 2</a>.</p>
+      </figcaption>
+</figure>
+
+  </section>
+
+  <section id="conclusions">
+    <h2>Conclusions</h2>
+
+    <p>In this work, we propose GraphQL-LD as a technique for combining the worlds of GraphQL and the Semantic Web.
+We provide an implementation of this approach, and demonstrate this with a set of example queries.</p>
+
+    <p>In future work, we intend to formalize our GraphQL-LD conversion algorithm.
+Furthermore, we intend to improve the way in which we determine which variables
+should be considered singular or plural.
+OWL’s <code>InverseFunctionalProperty</code> or JSON-LD framing are potential options that we consider for this.</p>
+
+    <p>In summary, this work allows GraphQL developers to query the Linked Open Data cloud.
+But also Linked Data experts can use it an an alternative to SPARQL.</p>
+
+  </section>
+
+</main>
+
+<footer><section id="references">
+<h2>References</h2>
+<dl class="references">
+  <dt id="ref-1">[1]</dt>
+  <dd resource="https://github.com/jindrichmynarz/sparql-to-jsonld" typeof="schema:CreativeWork">Mynarz, J.: sparql-to-jsonld. <a href="https://github.com/jindrichmynarz/sparql-to-jsonld">https:/​/​github.com/jindrichmynarz/sparql-to-jsonld</a></dd>
+  <dt id="ref-2">[2]</dt>
+  <dd resource="#transformingjsonsparql" typeof="schema:Article">Lisena, P., Troncy, R.: Transforming the JSON Output of SPARQL Queries for Linked Data Clients. In: Companion of the The Web Conference 2018 on The Web Conference 2018 (2018).</dd>
+  <dt id="ref-3">[3]</dt>
+  <dd resource="http://facebook.github.io/graphql/October2016/" typeof="schema:CreativeWork">Facebook, I.: GraphQL. Working Draft, Oct. 2016. <a href="http://facebook.github.io/graphql/October2016/">http:/​/​facebook.github.io/graphql/October2016/</a></dd>
+  <dt id="ref-4">[4]</dt>
+  <dd resource="#graphqlsemantics" typeof="schema:Article">Hartig, O., Pérez, J.: Semantics and Complexity of GraphQL. In: Proceedings of the 2018 World Wide Web Conference on World Wide Web (2018).</dd>
+  <dt id="ref-5">[5]</dt>
+  <dd resource="#jsonld" typeof="schema:Article">Consortium, W.W.W., others: JSON-LD 1.0: a JSON-based serialization for linked data. (2014).</dd>
+  <dt id="ref-6">[6]</dt>
+  <dd resource="https://www.w3.org/TR/2013/REC-sparql11-query-20130321/" typeof="schema:CreativeWork">Harris, S., Seaborne, A., Prud’hommeaux, E.: SPARQL 1.1 Query Language. W3C, <a href="https://www.w3.org/TR/2013/REC-sparql11-query-20130321/">https:/​/​www.w3.org/TR/2013/REC-sparql11-query-20130321/</a> (2013).</dd>
+  <dt id="ref-7">[7]</dt>
+  <dd resource="http://hypergraphql.org/" typeof="schema:CreativeWork">Ltd., S.I.: HyperGraphQL. <a href="http://hypergraphql.org/">http:/​/​hypergraphql.org/</a></dd>
+  <dt id="ref-8">[8]</dt>
+  <dd resource="https://comunica.github.io/Article-ISWC2018-Resource/" typeof="schema:Article">Taelman, R., Van Herwegen, J., Vander Sande, M., Verborgh, R.: Comunica: a Modular SPARQL Query Engine for the Web. In: Proceedings of the 17th International Semantic Web Conference (2018).</dd>
+</dl>
+</section>
+</footer>
+
+
+
+</body about="" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# owl: http://www.w3.org/2002/07/owl# xsd: http://www.w3.org/2001/XMLSchema# dcterms: http://purl.org/dc/terms/ dctypes: http://purl.org/dc/dcmitype/ foaf: http://xmlns.com/foaf/0.1/ v: http://www.w3.org/2006/vcard/ns# pimspace: http://www.w3.org/ns/pim/space# cc: https://creativecommons.org/ns# skos: http://www.w3.org/2004/02/skos/core# prov: http://www.w3.org/ns/prov# qb: http://purl.org/linked-data/cube# schema: http://schema.org/ void: http://rdfs.org/ns/void# rsa: http://www.w3.org/ns/auth/rsa# cert: http://www.w3.org/ns/auth/cert# cal: http://www.w3.org/2002/12/cal/ical# wgs: http://www.w3.org/2003/01/geo/wgs84_pos# org: http://www.w3.org/ns/org# biblio: http://purl.org/net/biblio# bibo: http://purl.org/ontology/bibo/ book: http://purl.org/NET/book/vocab# ov: http://open.vocab.org/terms/ sioc: http://rdfs.org/sioc/ns# doap: http://usefulinc.com/ns/doap# dbr: http://dbpedia.org/resource/ dbp: http://dbpedia.org/property/ sio: http://semanticscience.org/resource/ opmw: http://www.opmw.org/ontology/ deo: http://purl.org/spar/deo/ doco: http://purl.org/spar/doco/ cito: http://purl.org/spar/cito/ fabio: http://purl.org/spar/fabio/ oa: http://www.w3.org/ns/oa# as: https://www.w3.org/ns/activitystreams# ldp: http://www.w3.org/ns/ldp# solid: http://www.w3.org/ns/solid/terms# acl: http://www.w3.org/ns/auth/acl# dio: https://w3id.org/dio#" typeof="schema:CreativeWork sioc:Post prov:Entity">
+</html>
