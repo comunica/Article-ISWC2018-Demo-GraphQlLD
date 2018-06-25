@@ -1,0 +1,78 @@
+----------------------- REVIEW 1 --------------------- 
+PAPER: 43 
+TITLE: GraphQL-LD: Linked Data Querying with GraphQL 
+AUTHORS: Ruben Taelman, Miel Vander Sande and Ruben Verborgh 
+
+Overall evaluation: 2 (accept) 
+Reviewer's confidence: 2 ((medium)) 
+How relevant is this demo/poster to ISWC?: 2 (Very relevant) 
+Quality of writing: 2 (good) 
+Is the demo code available for download?: yes 
+Is this a novel idea/application/SW domain?: yes 
+
+----------- Strengths ----------- 
+It bridges the gap between graph query language and SPARQL. 
+
+----------- Weaknesses ----------- 
+The technical contribution is somehow weak. 
+
+----------- Detailed Review ----------- 
+In this demo paper, the authors introduced GraphQL-LD, an approach for extending GraphQL queries with a JSON-LD context, so that they can be used to evaluate queries over RDF data. The main components include: (1) GraphQL to SPARQL algebra, and (2) SPARQL results to tree. In general, this work is solid and practical, and it will help developers outside the semantic web community participate in the development of linked data applications. 
+
+
+----------------------- REVIEW 2 --------------------- 
+PAPER: 43 
+TITLE: GraphQL-LD: Linked Data Querying with GraphQL 
+AUTHORS: Ruben Taelman, Miel Vander Sande and Ruben Verborgh 
+
+Overall evaluation: 0 (borderline) 
+Reviewer's confidence: 2 ((medium)) 
+How relevant is this demo/poster to ISWC?: 2 (Very relevant) 
+Quality of writing: 0 (ok) 
+Is the demo code available for download?: yes 
+Is this a novel idea/application/SW domain?: no 
+
+----------- Strengths ----------- 
+The approach is practically important. 
+
+----------- Weaknesses ----------- 
+The theoretical background, such as sufficiency of conversion is not shown. 
+
+----------- Detailed Review ----------- 
+This demo will present the conversion from GraphQL with json context to SPARQL query and the conversion from triples to tree results. 
+
+As considering the popularity of GraphQL, this approach of GraphQL-LD is an important study in this community. However, the fact that the framework that demonstrates the GraphQL-LD is the authors' own framework slightly weakens the applicability for the general public. Moreover, although the formalization is raised as a future work, the sufficiency of conversion from SPARQL algebra to GraphQL one is not shown yet. 
+
+- Reference [7] should be fixed. 
+
+
+----------------------- REVIEW 3 --------------------- 
+PAPER: 43 
+TITLE: GraphQL-LD: Linked Data Querying with GraphQL 
+AUTHORS: Ruben Taelman, Miel Vander Sande and Ruben Verborgh 
+
+Overall evaluation: 0 (borderline) 
+Reviewer's confidence: 2 ((medium)) 
+How relevant is this demo/poster to ISWC?: 2 (Very relevant) 
+Quality of writing: 0 (ok) 
+Is the demo code available for download?: yes 
+Is this a novel idea/application/SW domain?: no 
+
+----------- Strengths ----------- 
+This demo proposes a method for querying to Linked Data through GraphQL 
+which is familiar for many web engineer． 
+
+----------- Weaknesses ----------- 
+It is not enough clear how the proposed system solve the problem to convert GraphQLto SPAR 
+QL. 
+
+----------- Detailed Review ----------- 
+This demo show a system for querying to Linked Data through GraphQL 
+I agree that it is very good idea to use GraphQL for querying to Linked Data 
+because GraphQL is more familiar than SPARQL for many web engineer. 
+
+The author discuss disadvantage of GraphQL compared to SPARQL in the 3rd paragraph of Section 1. 
+However, it is not enough clear how the proposed system solve the disadvantage while I understood 
+there are two modules for translation from GraphQL to SPARQL. 
+
+If the proposed system have some limitation compared to SPARQL, the author also should discuss about that. 
