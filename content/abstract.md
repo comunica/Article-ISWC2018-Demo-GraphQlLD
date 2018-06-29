@@ -14,9 +14,10 @@ In order to lower the barrier for developers towards Linked Data consumption,
 <!-- Task         -->
 the Linked Open Data cloud needs to be queryable with GraphQL as well.
 <!-- Object       -->
-In this article, we introduce a method for transforming GraphQL queries coupled with a JSON-LD context to SPARQL,
+In this article, we introduce _GraphQL-LD_, an approach that consists of
+a method for transforming GraphQL queries coupled with a JSON-LD context to SPARQL,
 and a method for converting SPARQL results to the GraphQL query-compatible response.
-We demonstrate this method by implementing it into the Comunica framework.
+We demonstrate this approach by implementing it into the Comunica framework.
 <!-- Findings     -->
 <!-- Conclusion   -->
 This approach brings us one step closer towards widespread
