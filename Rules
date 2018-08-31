@@ -8,6 +8,7 @@ require 'scholarmarkdown/filter/include_code'
 require 'scholarmarkdown/filter/labelify'
 require 'scholarmarkdown/filter/references_to_footer'
 require 'scholarmarkdown/filter/headerids_to_section'
+require 'scholarmarkdown/filter/dokieli'
 
 Encoding.default_external = "UTF-8"
 
@@ -23,6 +24,8 @@ compile '/index.*' do
   filter :scholar_headerids_to_section
   filter :rubypants
   layout '/default.*'
+  filter :scholar_dokieli, notifications: 'https://pod.linkedsoftwaredependencies.org/inbox/comunica.github.io/Article-ISWC2018-Demo-GraphQlLD/',
+                           annotations: 'https://pod.linkedsoftwaredependencies.org/annotation/comunica.github.io/Article-ISWC2018-Demo-GraphQlLD/'
 end
 
 ignore '/*.md'
